@@ -1,1 +1,1 @@
-export * from './hooks/useModularLayout/useModularLayout'
+export * from './hooks'

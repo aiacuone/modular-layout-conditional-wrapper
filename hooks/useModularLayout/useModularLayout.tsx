@@ -1,7 +1,16 @@
-import { Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, useBreakpointValue } from '@chakra-ui/react'
-import React,{ PropsWithChildren } from 'react'
+import {
+  Button,
+  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useBreakpointValue,
+} from '@chakra-ui/react'
+import React from 'react'
 import { Box } from '@chakra-ui/layout'
-import { ConditionalWrapper} from '../../components/ConditionalWrapper'
+import { ConditionalWrapper } from '../../components/ConditionalWrapper'
 
 interface HookProps {
   gap?: string | {}
@@ -22,7 +31,7 @@ export const useModularLayout = ({
   isRenderWrapper: isRenderWrapperGlobal,
   columnMaxWidth = '700px', // // small laptops generally have max width px of 1366, 2x700=1400 which will cover small laptops
   paddingWrapperWithBorder: paddingWrapperWithBorderGlobal = '15px',
-  buttonSize: buttonSizeGlobal
+  buttonSize: buttonSizeGlobal,
 }: HookProps): {
   ModularConditionalWrapper: any
   ModularChild: any
@@ -45,15 +54,12 @@ export const useModularLayout = ({
   const whiteAlphaBg = 'whiteAlpha.100'
   const border = `${borderSizeGlobal} solid ${borderColorGlobal}`
 
-  const ModularParent = ({
-    children,
-    ...rest
-  }: PropsWithChildren): JSX.Element => (
-    <Box p={gap}>
+  const ModularParent = ({ children, bg, ...rest }: any): JSX.Element => (
+    <Flex p={gap} w="100%" h="100%" bg={bg}>
       <Flex wrap={'wrap'} gap={gap} justify={'center'} w={'100%'} {...rest}>
         {children}
       </Flex>
-    </Box>
+    </Flex>
   )
 
   const ModularChild = ({
@@ -66,8 +72,9 @@ export const useModularLayout = ({
     borderSize,
     blackAlphaBg: blackAlphaBgArg,
     whiteAlphaBg: whiteAlphaBgArg,
+    bg,
     ...rest
-  }: PropsWithChildren): JSX.Element => (
+  }: any): JSX.Element => (
     <Flex
       w={'100%'}
       border={
@@ -78,39 +85,41 @@ export const useModularLayout = ({
       borderRadius={borderRadius ?? borderRadiusGlobal}
       justify={justify ?? justifyModularChildDefault}
       p={
-        showBorder
+        bg || showBorder
           ? paddingWrapperWithBorderGlobal ?? paddingWrapperWithBorder
           : undefined
       }
       order={order}
       bg={
-        blackAlphaBgArg
+        bg
+          ? bg
+          : blackAlphaBgArg
           ? blackAlphaBg
           : whiteAlphaBgArg
           ? whiteAlphaBg
           : undefined
       }
       overflow={'hidden'}
-      {...rest}
-    >
+      direction="column"
+      {...rest}>
       {children}
     </Flex>
   )
 
   const ModularConditionalWrapper = ({
     isRenderWrapper,
-    children
+    children,
+    ...rest
   }): JSX.Element => (
     <ConditionalWrapper
       condition={isRenderWrapper ?? isRenderWrapperGlobal}
-      wrapper={children => (
-        <Box flex={1} maxW={columnMaxWidth}>
+      wrapper={(children) => (
+        <Box flex={1} maxW={columnMaxWidth} {...rest}>
           <Flex wrap={'wrap'} gap={gap}>
             {children}
           </Flex>
         </Box>
-      )}
-    >
+      )}>
       {children}
     </ConditionalWrapper>
   )
@@ -124,8 +133,7 @@ export const useModularLayout = ({
     <Button
       size={buttonSize ?? buttonSizeGlobal ?? buttonSizeDefault}
       w={w ?? defaultButtonWidth}
-      {...rest}
-    >
+      {...rest}>
       {children}
     </Button>
   )
@@ -141,20 +149,13 @@ export const useModularLayout = ({
   )
 
   const ModularTabList = ({ children, ...rest }): JSX.Element => (
-    <TabList
-      justifyContent={{ base: 'center', sm: 'flex-start' }}
-      {...rest}
-    >
+    <TabList justifyContent={{ base: 'center', sm: 'flex-start' }} {...rest}>
       {children}
     </TabList>
   )
 
   const ModularTabPanels = ({ children, ...rest }): JSX.Element => (
-    <TabPanels
-      borderRadius={borderRadiusGlobal}
-      border={border}
-      {...rest}
-    >
+    <TabPanels borderRadius={borderRadiusGlobal} border={border} {...rest}>
       {children}
     </TabPanels>
   )
@@ -178,6 +179,6 @@ export const useModularLayout = ({
     blackAlphaBg,
     whiteAlphaBg,
     borderRadius: borderRadiusGlobal,
-    border
+    border,
   }
 }
